@@ -5,6 +5,7 @@ import {
   Code,
   CopyButton,
   Flex,
+  Group,
   Table,
   Text,
   ThemeIcon,
@@ -32,13 +33,34 @@ export function MessageItem({ message }: { message: Message }) {
     <ScrollIntoView>
       <Card withBorder>
         <Flex gap="sm">
-          {message.role === "user" && (
-            <ThemeIcon color="gray" size="lg">
-              <IconUser size={20} />
-            </ThemeIcon>
-          )}
-          {message.role === "assistant" && <LogoIcon style={{ height: 32 }} />}
           <Box sx={{ flex: 1, width: 0 }} className="markdown">
+            <Group position="apart">
+              {message.role === "user" && (
+                <ThemeIcon color="gray" size="lg">
+                  <IconUser size={20} />
+                </ThemeIcon>
+              )}
+              {message.role === "assistant" && (
+                <LogoIcon style={{ height: 32 }} />
+              )}
+              <Group spacing="xs">
+                <CreatePromptModal content={message.content} />
+                <CopyButton value={message.content}>
+                  {({ copied, copy }) => (
+                    <Tooltip label={copied ? "Copied" : "Copy"}>
+                      <ActionIcon onClick={copy}>
+                        <IconCopy opacity={0.5} size={20} />
+                      </ActionIcon>
+                    </Tooltip>
+                  )}
+                </CopyButton>
+                {/* <Tooltip label={`${wordCount} words`} position="left">
+              <ActionIcon>
+                <IconInfoCircle opacity={0.5} size={20} />
+              </ActionIcon>
+            </Tooltip> */}
+              </Group>
+            </Group>
             <ReactMarkdown
               children={message.content}
               remarkPlugins={[remarkGfm]}
@@ -78,23 +100,6 @@ export function MessageItem({ message }: { message: Message }) {
                 </Text>
               </Box>
             )}
-          </Box>
-          <Box>
-            <CreatePromptModal content={message.content} />
-            <CopyButton value={message.content}>
-              {({ copied, copy }) => (
-                <Tooltip label={copied ? "Copied" : "Copy"} position="left">
-                  <ActionIcon onClick={copy}>
-                    <IconCopy opacity={0.5} size={20} />
-                  </ActionIcon>
-                </Tooltip>
-              )}
-            </CopyButton>
-            {/* <Tooltip label={`${wordCount} words`} position="left">
-              <ActionIcon>
-                <IconInfoCircle opacity={0.5} size={20} />
-              </ActionIcon>
-            </Tooltip> */}
           </Box>
         </Flex>
       </Card>
